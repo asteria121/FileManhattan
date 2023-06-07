@@ -1,0 +1,199 @@
+﻿<mah:MetroWindow x:Class="FileManhattan.MainWindow"
+                 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:FileManhattan"
+        xmlns:converter="clr-namespace:FileManhattan.Converter"
+        mc:Ignorable="d"
+        WindowStartupLocation="Manual"
+        Title="File manhattan v1.0.0" Height="803" Width="858" Loaded="MetroWindow_Loaded" ResizeMode="CanMinimize" IsMaxRestoreButtonEnabled="False" FontFamily="Segoe UI" AutomationProperties.IsRequiredForForm="True">
+
+    <Window.Resources>
+        <converter:DataSizeConverter x:Key="DataSizeConverter"/>
+        <converter:RemoveSettingsConverter x:Key="RemoveSettingsConverter"/>
+        <converter:CryptoSettingsConverter x:Key="CryptoSettingsConverter"/>
+        <converter:DiskRemoveSettingsConverter x:Key="DiskRemoveSettingsConverter"/>
+
+    </Window.Resources>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <Button Click="informationButton_Click"
+                    Content="프로그램 정보">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconFontAwesome Width="22" Height="22" VerticalAlignment="Center" Kind="QuestionCircleRegular"/>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="{Binding}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+    <Grid Width="858" Height="787">
+        <TabControl x:Name="mainTabControl" Margin="10,10,10,10">
+            <TabItem Header="파일 소거">
+                <Grid>
+                    <StackPanel Margin="0,501,491,23">
+                        <ComboBox x:Name="removeAlgorithmComboBox" SelectedIndex="0" SelectionChanged="removeAlgorithmComboBox_SelectionChanged" mah:TextBoxHelper.UseFloatingWatermark="True" mah:TextBoxHelper.Watermark="삭제 알고리즘">
+                            <ComboBoxItem Content="1회 덮어쓰기 - 랜덤 데이터"/>
+                            <ComboBoxItem Content="3회 덮어쓰기 - DoD 5220.22-M (8-306./E)"/>
+                            <ComboBoxItem Content="7회 덮어쓰기 - DoD 5220.22-M (8-306./ECE)"/>
+                            <ComboBoxItem Content="35회 덮어쓰기 - 피터 거트만 알고리즘"/>
+                        </ComboBox>
+                        <Button x:Name="removeSettingsButton" Content="선택한 작업 알고리즘 변경" Height="26" Click="removeSettingsButton_Click"/>
+                        <Button x:Name="removeAddFileButton" Content="삭제할 파일 추가" Height="26" Click="removeAddFileButton_Click"/>
+                        <Button x:Name="removeAddFolderButton" Content="삭제할 폴더 추가" Height="26" Click="removeAddFolderButton_Click"/>
+                        <Button x:Name="removeRemoveButton" Content="선택한 작업 삭제" Height="26" Click="removeRemoveButton_Click"/>
+                        <Button x:Name="removeRemoveCompleteButton" Content="완료된 작업 삭제" Height="26" Click="removeRemoveCompleteButton_Click"/>
+                        <Button x:Name="removeStartButton" Content="작업 시작" Click="removeStartButton_Click"/>
+
+                    </StackPanel>
+                    <GroupBox x:Name="removeTaskGroupBox" Header="작업 목록" Margin="0,0,0,221">
+                        <Grid>
+                            <DataGrid x:Name="removeDataGrid" IsReadOnly="True" AutoGenerateColumns="False"
+                            VirtualizingPanel.VirtualizationMode="Recycling"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.IsVirtualizingWhenGrouping="True" GridLinesVisibility="All" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" DragEnter="removeDataGrid_DragEnter" Drop="removeDataGrid_Drop" AllowDrop="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding FileName}" CanUserReorder="False" Header="파일명"/>
+                                    <DataGridTextColumn Binding="{Binding FileSize, Converter={StaticResource DataSizeConverter}}" CanUserReorder="False" Header="용량"/>
+                                    <DataGridTextColumn Binding="{Binding Mode, Converter={StaticResource RemoveSettingsConverter}}" CanUserReorder="False" Header="소거 알고리즘"/>
+                                    <DataGridTextColumn Binding="{Binding ProgressStatus}" CanUserReorder="False" Header="상태"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+
+                    </GroupBox>
+                    <TextBox x:Name="removeAlgorithmHelpTextBox" HorizontalAlignment="Left" Margin="341,501,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="491" Height="198" IsReadOnly="True" Text="도움말" mah:TextBoxHelper.UseFloatingWatermark="True" mah:TextBoxHelper.Watermark="도움말"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="HDD 소거">
+                <Grid>
+                    <StackPanel Margin="0,553,491,23">
+                        <ComboBox x:Name="diskRemoveAlgorithmComboBox" SelectedIndex="0" mah:TextBoxHelper.UseFloatingWatermark="True" mah:TextBoxHelper.Watermark="삭제 알고리즘">
+                            <ComboBoxItem Content="1회 덮어쓰기 - 랜덤 데이터"/>
+                            <ComboBoxItem Content="3회 덮어쓰기 - DoD 5220.22-M (8-306./E)"/>
+                            <ComboBoxItem Content="7회 덮어쓰기 - DoD 5220.22-M (8-306./ECE)"/>
+                            <ComboBoxItem Content="35회 덮어쓰기 - 피터 거트만 알고리즘"/>
+                        </ComboBox>
+                        <Button x:Name="removeDiskSettingsButton" Content="선택한 작업 알고리즘 변경" Height="26" Click="removeDiskSettingsButton_Click"/>
+                        <Button x:Name="removeDiskRemoveButton" Content="선택한 작업 삭제" Height="26" Click="removeDiskRemoveButton_Click"/>
+                        <Button x:Name="removeDiskRemoveCompleteButton" Content="완료된 작업 삭제" Height="26" Click="removeDiskRemoveCompleteButton_Click"/>
+                        <Button x:Name="removeDiskStartButton" Content="작업 시작" Click="removeDiskStartButton_Click"/>
+
+                    </StackPanel>
+                    <GroupBox x:Name="removeDiskTaskGroupBox" Header="작업 목록" Margin="0,0,0,169">
+                        <Grid>
+                            <DataGrid x:Name="diskDataGrid" IsReadOnly="True" AutoGenerateColumns="False"
+                            VirtualizingPanel.VirtualizationMode="Recycling"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.IsVirtualizingWhenGrouping="True" GridLinesVisibility="All" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" DragEnter="removeDataGrid_DragEnter" Drop="removeDataGrid_Drop" AllowDrop="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="삭제 대상">
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource DiskRemoveSettingsConverter}">
+                                                <Binding Path="DriveInformation"/>
+                                                <Binding Path="DiskRemoveMethod"/>
+                                                <Binding Path="IsWipeMFT"/>
+                                                <Binding Path="IsWipeClusterTip"/>
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding Size, Converter={StaticResource DataSizeConverter}}" CanUserReorder="False" Header="용량"/>
+                                    <DataGridTextColumn Binding="{Binding Mode, Converter={StaticResource RemoveSettingsConverter}}" CanUserReorder="False" Header="소거 알고리즘"/>
+                                    <DataGridTextColumn Binding="{Binding ProgressStatus}" CanUserReorder="False" Header="상태"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+
+                    </GroupBox>
+                    <GroupBox Header="디스크 빈공간 삭제" Margin="341,553,246,23">
+                        <Grid>
+                            <ComboBox x:Name="emptyDiskComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="131" SelectedIndex="0"/>
+                            <Button x:Name="emptyDiskAddButton" Content="추가" HorizontalAlignment="Left" Margin="146,10,0,0" VerticalAlignment="Top" Height="26" Click="emptyDiskAddButton_Click"/>
+                            <Button x:Name="emptyDiskHelpButton" Content="도움말" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" Height="26" Click="emptyDiskHelpButton_Click"/>
+                            <mah:ToggleSwitch x:Name="wipeMFTSwitch" Content="MFT 빈공간 덮어쓰기" Margin="10,36,0,0" VerticalAlignment="Top" IsOn="True"/>
+                            <mah:ToggleSwitch x:Name="wipeClusterTipSwitch" Content="클러스터 팁 덮어쓰기" Margin="10,68,0,0" VerticalAlignment="Top" IsOn="True"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="파티션 전체 삭제" Margin="586,553,0,23">
+                        <Grid>
+                            <ComboBox x:Name="partitionComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="132" SelectedIndex="0"/>
+                            <Button x:Name="partitionAddButton" Content="추가" HorizontalAlignment="Left" Margin="147,10,0,0" VerticalAlignment="Top" Height="25" Click="partitionAddButton_Click"/>
+                            <Button x:Name="partitionHelpButton" Content="도움말" HorizontalAlignment="Left" Margin="184,10,0,0" VerticalAlignment="Top" Height="26" Click="partitionHelpButton_Click"/>
+
+                        </Grid>
+                    </GroupBox>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="파일 암호화/복호화">
+                <Grid>
+                    <GroupBox x:Name="cryptoTaskGroupBox" Header="작업 목록" Margin="0,0,0,155">
+                        <Grid>
+                            <DataGrid x:Name="cryptoDataGrid" IsReadOnly="True" AutoGenerateColumns="False"
+                                VirtualizingPanel.VirtualizationMode="Recycling"
+                                VirtualizingPanel.IsVirtualizing="True"
+                                VirtualizingPanel.IsVirtualizingWhenGrouping="True" GridLinesVisibility="All" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" AllowDrop="True" DragEnter="cryptoDataGrid_DragEnter" Drop="cryptoDataGrid_Drop">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding FileName}" CanUserReorder="False" Header="파일명"/>
+                                    <DataGridTextColumn Binding="{Binding FileSize, Converter={StaticResource DataSizeConverter}}" CanUserReorder="False" Header="용량"/>
+                                    <DataGridTextColumn Header="작업 종류">
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CryptoSettingsConverter}">
+                                                <Binding Path="IsEncrypt"/>
+                                                <Binding Path="IsRemoveAfter"/>
+                                                <Binding Path="Mode"/>
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding ProgressStatus}" CanUserReorder="False" Header="상태"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+
+                    </GroupBox>
+
+                    <GroupBox Header="작업 설정" Margin="0,567,0,10">
+                        <Grid>
+                            <Button x:Name="cryptoStartButton" Content="작업 시작" HorizontalAlignment="Left" Margin="555,31,0,0" VerticalAlignment="Top" Width="120" Height="26" Click="cryptoStartButton_Click"/>
+                            <Button x:Name="cryptoAddFileButton" Content="파일 추가" HorizontalAlignment="Left" Margin="555,0,0,0" VerticalAlignment="Top" Height="26" Width="120" Click="cryptoAddFileButton_Click"/>
+                            <Button x:Name="cryptoRemoveButton" Content="선택한 작업 삭제" HorizontalAlignment="Left" Margin="429,62,0,0" VerticalAlignment="Top" Height="26" Width="120" Click="cryptoRemoveButton_Click"/>
+                            <Button x:Name="cryptoRemoveCompletedButton" Content="완료된 작업 삭제" HorizontalAlignment="Left" Margin="429,31,0,0" VerticalAlignment="Top" Height="26" Width="120" Click="cryptoRemoveCompletedButton_Click"/>
+                            <Button x:Name="cryptoSettingsButton" Content="선택한 작업 설정 변경" HorizontalAlignment="Left" VerticalAlignment="Top" Height="26" Width="120" Margin="429,0,0,0" Click="cryptoSettingsButton_Click"/>
+                            <StackPanel Margin="0,0,602,0">
+                                <PasswordBox x:Name="passwordBox" mah:TextBoxHelper.Watermark="비밀번호" mah:TextBoxHelper.UseFloatingWatermark="True"
+                            Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}" PasswordChanged="passwordBox_PasswordChanged"/>
+                                <PasswordBox x:Name="confirmPasswordBox" mah:TextBoxHelper.Watermark="비밀번호 확인" mah:TextBoxHelper.UseFloatingWatermark="True"
+                            Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}" PasswordChanged="passwordBox_PasswordChanged"/>
+                                <Label x:Name="passwordAlertLabel" Content=""/>
+                            </StackPanel>
+                            <StackPanel Margin="225,0,397,0">
+                                <ComboBox x:Name="cryptoIsEncryptComboBox" SelectedIndex="0" SelectionChanged="cryptoIsEncryptComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="암호화"/>
+                                    <ComboBoxItem Content="복호화"/>
+                                </ComboBox>
+                                <ComboBox x:Name="cryptoRemoveComboBox" SelectedIndex="1" mah:TextBoxHelper.UseFloatingWatermark="True" mah:TextBoxHelper.Watermark="삭제 알고리즘">
+                                    <ComboBoxItem Content="일반 삭제"/>
+                                    <ComboBoxItem Content="1회 덮어쓰기 - 랜덤 데이터"/>
+                                    <ComboBoxItem Content="3회 덮어쓰기 - DoD 5220.22-M"/>
+                                    <ComboBoxItem Content="7회 덮어쓰기 - DoD 5220.22-M ECE"/>
+                                    <ComboBoxItem Content="35회 덮어쓰기 - 피터 거트만 알고리즘"/>
+                                </ComboBox>
+                                <mah:ToggleSwitch x:Name="cryptoRemoveAfterSwitch" Content="암호화 후 파일 삭제"/>
+                            </StackPanel>
+
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+    </Grid>
+</mah:MetroWindow>
