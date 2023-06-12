@@ -142,8 +142,7 @@ namespace FileManhattan.Modules
             {
                 foreach (string file in Directory.GetFiles(path))
                 {
-                    MessageBox.Show(file);
-                    MessageBox.Show(RemoveClusterTip(file, mode).ToString());
+                    RemoveClusterTip(file, mode);
                 }
 
                 foreach (string directory in Directory.GetDirectories(path))
